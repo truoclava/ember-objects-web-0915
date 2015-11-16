@@ -25,7 +25,7 @@ Ember Objects expect you to interact with properties using the `get` and `set` m
 
 Ember Objects are like JavaScript objects, in that they are open. You can add any property to an object, no need to define setters.
 
-What if we don't want a generic object? What if we want to design an object with functions an properties? Enter the `extend` keyword.
+What if we don't want a generic object? What if we want to design an object with functions and properties? Enter the `extend` method.
 
 ```javascript
 var Person = Ember.Object.extend({
@@ -36,12 +36,12 @@ var Person = Ember.Object.extend({
 });
 
 var bob = Person.create({name: "Bob", age: 35});
-bob.greet();
+bob.greet(); // Bob says "Hi!"
 ```
 
 Here we create a `Person` Object. We can pass `create` properties, even if they're not defined in the prototype. It's a good idea to set the expected properties to null to let users of your Object know what it expects. It's not required though.
 
-In the test you will see your classes imported like  this:
+In the tests you will see your classes imported like  this:
 
 ```javascript
 export default Ember.Object.extend();
@@ -57,9 +57,9 @@ It's a shortcut.
 
 ## Computed Properties
 
-Computed properties are a super power in Ember and the fact that they're in EVERY OBJECT should get you excited. A computed property is a property that gets updated as you object changes. You define a list of properties you depend on, and when one of those change (meaning someone called `set` on it), your computed property will also change. It's lazy so it won't regenerate the value every time, only when there's a change. Here's a simple example.
+Computed properties are a super power in Ember and the fact that they're in EVERY OBJECT should get you excited. A computed property is a property that gets updated as your object changes. You define a list of properties you depend on, and when one of those properties changes (meaning someone called `set` on it), your computed property will also change. It's lazy so it won't regenerate the value every time, only when there's a change. Here's a simple example.
 
-Let's say we want to have the total price of an item update based on the price &times; the quantity. In regular javascript you might define a function called total that will multiply price and quantity, but this would run every time. We only need it to run once, and only when it's changed after that.
+Let's say we want to have the total price of an item update based on the price &times; the quantity. In regular javascript you might define a function called total that will multiply price and quantity. This calculation would run every time it's called. With computed properties we only run the computation when a dependent property changes.
 Here's the Ember code for that:
 
 ```javascript
@@ -77,7 +77,7 @@ ham.set("quantity", 5)
 ham.get("total"); //15
 ```
 
-Be sure to look at the created ones ember makes for you [here](http://emberjs.com/api/classes/Ember.computed.html).
+Be sure to look at the created ones Ember makes for you [here](http://emberjs.com/api/classes/Ember.computed.html).
 
 ### Working with collections
 
@@ -103,6 +103,7 @@ var Item = Ember.Object.extend({
 var ham     = Item.create({price: 3, quantity: 1});
 var cheese  = Item.create({price: 5, quantity: 1});
 var bread   = Item.create({price: 2, quantity: 1});
+
 var cart = ShoppingCart.create();
 cart.get("total"); // 0
 
@@ -144,7 +145,9 @@ cart.get('items').pushObjects([ham, cheese, bread]);
 cart.get("numberOfItems"); // 3
 ```
 
-Here we did 2 things. One is the use of `items.[]`. This means update the computed property if the number of elements changes. You won't be notified of changes to properties. The other thing we did is `return this.get('items.length')`. Ember lets you chain messages inside of `get`s and `sets`s. You can use a short hand for this though, by using one of Ember's built in computed properties. Basically what we're doing is creating an alias for `items.length` that updates. Instead of the function we have for `numberOfItems`, we can have this instead:
+Here we did 2 things. One is the use of `items.[]`. This means update the computed property if the number of elements changes. You won't be notified of changes to properties. The other thing we did is `return this.get('items.length')`. Ember lets you chain messages inside of `get`s and `sets`s.
+
+You can use a short hand for this though, by using one of Ember's built in computed properties. Basically what we're doing is creating an alias for `items.length` that updates. Instead of the function we have for `numberOfItems`, we can have this instead:
 
 ```javascript
 var ShoppingCart = Ember.Object.extend({
